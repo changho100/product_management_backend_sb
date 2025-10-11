@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>제품 상세</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-box"></i> 제품 상세</h2>
+                    <a href="/products" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> 목록으로
+                    </a>
+                </div>
+                
+                <div th:if="${product}" class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="card-title mb-0" th:text="${product.name}"></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">제품 정보</h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-bold">ID:</td>
+                                        <td th:text="${product.id}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">제품명:</td>
+                                        <td th:text="${product.name}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">가격:</td>
+                                        <td class="text-success fw-bold">
+                                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '원'"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">수량:</td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${product.quantity} + '개'"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">등록일:</td>
+                                        <td th:text="${#temporals.format(product.createdAt, 'yyyy년 MM월 dd일 HH:mm:ss')}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">제품 설명</h6>
+                                <div class="border rounded p-3 bg-light">
+                                    <p th:text="${product.description}" th:if="${product.description}" 
+                                       class="mb-0"></p>
+                                    <p th:unless="${product.description}" 
+                                       class="text-muted mb-0 fst-italic">설명이 없습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <form th:action="@{/products/{id}/delete(id=${product.id})}" 
+                              method="post" class="d-inline"
+                              onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> 삭제
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div th:unless="${product}" class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    요청한 제품을 찾을 수 없습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

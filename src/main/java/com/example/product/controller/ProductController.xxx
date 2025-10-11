@@ -1,0 +1,64 @@
+// 7. src/main/java/com/example/product/controller/ProductController.java
+package com.example.product.controller;
+
+import com.example.product.entity.Product;
+import com.example.product.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/products")
+@RequiredArgsConstructor
+public class ProductController {
+    
+    private final ProductService productService;
+    
+    @GetMapping
+    public String listProducts(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("newProduct", new Product());
+        return "products/list";
+    }
+    
+    @PostMapping
+    public String addProduct(@ModelAttribute Product product, 
+                           RedirectAttributes redirectAttributes) {
+        try {
+            productService.saveProduct(product);
+            redirectAttributes.addFlashAttribute("success", "제품이 성공적으로 추가되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "제품 추가 중 오류가 발생했습니다.");
+        }
+        return "redirect:/products";
+    }
+    
+    @GetMapping("/{id}")
+    public String viewProduct(@PathVariable Long id, Model model) {
+        productService.getProductById(id).ifPresent(product -> 
+            model.addAttribute("product", product));
+        return "products/detail";
+    }
+    
+    @PostMapping("/{id}/delete")
+    public String deleteProduct(@PathVariable Long id, 
+                              RedirectAttributes redirectAttributes) {
+        try {
+            productService.deleteProduct(id);
+            redirectAttributes.addFlashAttribute("success", "제품이 성공적으로 삭제되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "제품 삭제 중 오류가 발생했습니다.");
+        }
+        return "redirect:/products";
+    }
+    
+    @GetMapping("/search")
+    public String searchProducts(@RequestParam String keyword, Model model) {
+        model.addAttribute("products", productService.searchProducts(keyword));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("newProduct", new Product());
+        return "products/list";
+    }
+}
