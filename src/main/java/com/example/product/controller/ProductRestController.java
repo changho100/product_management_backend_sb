@@ -1,3 +1,4 @@
+// 제품 관리 API
 package com.example.product.controller;
 
 import com.example.product.entity.Product;
