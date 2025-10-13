@@ -51,6 +51,13 @@ public class DataInitializer implements CommandLineRunner {
                 .price(new BigDecimal("80000.00"))
                 .quantity(30)
                 .build());
+
+            productRepository.save(Product.builder()
+                .name("프린터")
+                .description("레이저프린터 ")
+                .price(new BigDecimal("500000.00"))
+                .quantity(50)
+                .build());
                 
             System.out.println("초기 데이터가 성공적으로 생성되었습니다.");
         }
