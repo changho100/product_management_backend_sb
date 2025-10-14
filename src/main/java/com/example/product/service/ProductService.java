@@ -33,4 +33,13 @@ public class ProductService {
     public List<Product> searchProducts(String keyword) {
         return productRepository.findByNameContainingIgnoreCase(keyword);
     }
+
+    public Optional<Product> updateProduct(Long id, Product product) {
+        return productRepository.findById(id).map(existingProduct -> {
+            existingProduct.setName(product.getName());
+            existingProduct.setDescription(product.getDescription());
+            existingProduct.setPrice(product.getPrice());
+            return productRepository.save(existingProduct);
+        });
+    }
 }
